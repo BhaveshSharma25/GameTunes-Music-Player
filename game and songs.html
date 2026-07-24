@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameTunes - Gaming Songs & Soundtracks</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #6b7cff, #4ecdc4, #45b7d1, #f9ca24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(124, 107, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #searchInput:focus {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(114, 107, 255, 0.4);
+            transform: scale(1.02);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+        }
+
+        /* Music Player */
+        .music-player {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .now-playing {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            min-height: 2rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin: 1rem 0;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6b86ff, #4ecdc4);
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.1s ease;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(124, 107, 255, 0.5);
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        #volumeSlider {
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+
+        }
+
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Playlist */
+        .playlist {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .song-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .song-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(107, 107, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .song-card:hover::before {
+            left: 100%;
+        }
+
+        .song-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(107, 142, 255, 0.3);
+            border-color: rgba(107, 107, 255, 0.5);
+        }
+
+        .song-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #4ecdc4;
+        }
+
+        .game-name {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .song-duration {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .active-song {
+            border-color: #6b84ff;
+            box-shadow: 0 0 30px rgba(114, 107, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .controls {
+                gap: 1rem;
+            }
+
+            .playlist {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(107, 137, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(112, 107, 255, 0.8);
+            }
+        }
+
+        .glow {
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-gamepad"></i> GameTunes</h1>
+            <p class="subtitle">Epic Gaming Soundtracks & Songs</p>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search songs or games...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+        </header>
+
+        <div class="music-player" id="musicPlayer">
+            <div class="now-playing" id="nowPlaying">Select a song to start</div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="controls">
+                <button class="control-btn" id="prevBtn"><i class="fas fa-step-backward"></i></button>
+                <button class="control-btn play-btn" id="playBtn"><i class="fas fa-play"></i></button>
+                <button class="control-btn" id="nextBtn"><i class="fas fa-step-forward"></i></button>
+            </div>
+            <div class="volume-container">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            </div>
+        </div>
+
+        <div class="playlist" id="playlist">
+            <!-- Songs will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Sample gaming songs data (replace with your actual audio files)
+        const songs = [
+            {
+                title: "Main Theme",
+                game: "The Legend of Zelda: Breath of the Wild",
+                artist: "Manaka Kataoka",
+                duration: "3:45",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                cover: "https://via.placeholder.com/300x300/4ecdc4/ffffff?text=Zelda"
+            },
+            {
+                title: "Battle Theme",
+                game: "Final Fantasy VII",
+                artist: "Nobuo Uematsu",
+                duration: "2:58",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                cover: "https://via.placeholder.com/300x300/ff6b6b/ffffff?text=FFVII"
+            },
+            {
+                title: "Gerudo Valley",
+                game: "The Legend of Zelda: Ocarina of Time",
+                artist: "Koji Kondo",
+                duration: "3:12",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+                cover: "https://via.placeholder.com/300x300/f9ca24/000000?text=Ocarina"
+            },
+            {
+                title: "One-Winged Angel",
+                game: "Final Fantasy VII",
+                artist: "Nobuo Uematsu",
+                duration: "4:20",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+                cover: "https://via.placeholder.com/300x300/45b7d1/ffffff?text=One-Wing"
+            },
+            {
+                title: "Megalovania",
+                game: "Undertale",
+                artist: "Toby Fox",
+                duration: "2:35",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+                cover: "https://via.placeholder.com/300x300/ff4757/ffffff?text=Undertale"
+            },
+            {
+                title: "Dragonborn",
+                game: "Skyrim",
+                artist: "Jeremy Soule",
+                duration: "3:56",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+                cover: "https://via.placeholder.com/300x300/57606f/ffffff?text=Skyrim"
+            },
+
+            {
+                title: "mission: impossible theme",
+                game: "Mission: Impossible",
+                artist: "Lalo Schifrin",
+                duration: "3:45",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3",
+                cover: "https://via.placeholder.com/300x300/ffeb3b/000000?text=MI"
+            },
+            {
+                title: "Minecraft: Sweden",
+                game: "Minecraft",
+                artist: "C418",
+                duration: "2:30",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3",
+                cover: "https://via.placeholder.com/300x300/3498db/ffffff?text=Minecraft"
+            },
+            {
+                title: "minecraft: wet hands",
+                game: "Minecraft",
+                artist: "C418",
+                duration: "2:15",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3",
+                cover: "https://via.placeholder.com/300x300/3498db/ffffff?text=Minecraft"
+            },
+            {
+                title: "how to train your dragon: test drive",
+                game: "How to Train Your Dragon",
+                artist: "John Powell",
+                duration: "3:20",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3",
+                cover: "https://via.placeholder.com/300x300/ff6b6b/ffffff?text=How+to+Train+Your+Dragon"
+            },
+            {
+                title: "the witcher 3: geralt of rivia",
+                game: "The Witcher 3: Wild Hunt",
+                artist: "Jakub Różalski",
+                duration: "4:10",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3",
+                cover: "https://via.placeholder.com/300x300/9b59b6/ffffff?text=The+Witcher+3"
+            },
+            {
+                title:"horror game: resident evil 2 main theme",
+                game:"Resident Evil 2",
+                artist: "Motohiro Yamamoto",
+                duration: "3:30",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3",
+                cover: "https://via.placeholder.com/300x300/ff5252/ffffff?text=Resident+Evil+2"
+            },
+            {
+                title: "horror ambient: silent hill 2 main theme",
+                game: "Silent Hill 2",
+                artist: "Motohiro Yamamoto",
+                duration: "3:30",
+                audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3",
+                cover: "https://via.placeholder.com/300x300/ff5252/ffffff?text=Silent+Hill+2"
+            }
+        ];
+
+        class MusicPlayer {
+            constructor() {
+                this.audio = new Audio();
+                this.currentSongIndex = 0;
+                this.isPlaying = false;
+                this.initializeElements();
+                this.renderPlaylist();
+                this.bindEvents();
+                this.audio.volume = 0.5;
+            }
+
+            initializeElements() {
+                this.playBtn = document.getElementById('playBtn');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.progressContainer = document.getElementById('progressContainer');
+                this.progressBar = document.getElementById('progressBar');
+                this.nowPlaying = document.getElementById('nowPlaying');
+                this.volumeSlider = document.getElementById('volumeSlider');
+                this.searchInput = document.getElementById('searchInput');
+                this.playlist = document.getElementById('playlist');
+            }
+
+            bindEvents() {
+                this.playBtn.addEventListener('click', () => this.togglePlay());
+                this.prevBtn.addEventListener('click', () => this.prevSong());
+                this.nextBtn.addEventListener('click', () => this.nextSong());
+                this.progressContainer.addEventListener('click', (e) => this.setProgress(e));
+                this.audio.addEventListener('timeupdate', () => this.updateProgress());
+                this.audio.addEventListener('ended', () => this.nextSong());
+                this.volumeSlider.addEventListener('input', (e) => this.setVolume(e.target.value));
+                this.searchInput.addEventListener('input', (e) => this.searchSongs(e.target.value));
+            }
+
+            renderPlaylist(filteredSongs = songs) {
+                this.playlist.innerHTML = filteredSongs.map((song, index) => `
+                    <div class="song-card" data-index="${index}">
+                        <div class="song-title">${song.title}</div>
+                        <div class="game-name">${song.game}</div>
+                        <div class="song-duration">${song.duration}</div>
+                    </div>
+                `).join('');
+
+                // Add click events to song cards
+                document.querySelectorAll('.song-card').forEach((card, index) => {
+                    card.addEventListener('click', () => this.playSong(index));
+                });
+            }
+
+            playSong(index) {
+                this.currentSongIndex = index;
+                const song = songs[index];
+                this.audio.src = song.audio;
+                this.nowPlaying.textContent = `${song.title} - ${song.game}`;
+                this.updateActiveSong();
+                this.play();
+            }
+
+            togglePlay() {
+                if (this.isPlaying) {
+                    this.pause();
+                } else {
+                    this.play();
+                }
+            }
+
+            play() {
+                this.audio.play();
+                this.isPlaying = true;
+                this.playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                document.querySelector('.music-player').classList.add('glow');
+            }
+
+            pause() {
+                this.audio.pause();
+                this.isPlaying = false;
+                this.playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                document.querySelector('.music-player').classList.remove('glow');
+            }
+
+            nextSong() {
+                this.currentSongIndex = (this.currentSongIndex + 1) % songs.length;
+                this.playSong(this.currentSongIndex);
+            }
+
+            prevSong() {
+                this.currentSongIndex = (this.currentSongIndex - 1 + songs.length) % songs.length;
+                this.playSong(this.currentSongIndex);
+            }
+
+            updateProgress() {
+                if (this.audio.duration) {
+                    const progress = (this.audio.currentTime / this.audio.duration) * 100;
+                    this.progressBar.style.width = `${progress}%`;
+                }
+            }
+
+            setProgress(e) {
+                const width = this.progressContainer.clientWidth;
+                const clickX = e.offsetX;
+                const duration = this.audio.duration;
+                this.audio.currentTime = (clickX / width) * duration;
+            }
+
+            updateActiveSong() {
+                document.querySelectorAll('.song-card').forEach((card, index) => {
+                    card.classList.toggle('active-song', index === this.currentSongIndex);
+                });
+            }
+
+            setVolume(volume) {
+                this.audio.volume = volume / 100;
+            }
+
+            searchSongs(query) {
+                const filtered = songs.filter(song =>
+                    song.title.toLowerCase().includes(query.toLowerCase()) ||
+                    song.game.toLowerCase().includes(query.toLowerCase())
+                );
+                this.renderPlaylist(filtered);
+            }
+        }
+
+        // Initialize the music player when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new MusicPlayer();
+        });
+    </script>
+</body>
+
+</html>
